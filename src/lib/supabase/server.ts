@@ -1,7 +1,6 @@
 // src/lib/supabase/server.ts
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-import type { Database } from '@/types/supabase'
 
 export async function createClient() {
   const cookieStore = await cookies()
@@ -11,11 +10,11 @@ export async function createClient() {
 
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error(
-      'Missing Supabase environment variables. Please check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY'
+      'Missing Supabase environment variables'
     )
   }
 
-  return createServerClient<Database>(
+  return createServerClient(
     supabaseUrl,
     supabaseAnonKey,
     {
@@ -27,14 +26,14 @@ export async function createClient() {
           try {
             cookieStore.set({ name, value, ...options })
           } catch {
-            // Server Component tidak bisa set cookies
+            // Server Component can't set cookies
           }
         },
         async remove(name: string, options: CookieOptions) {
           try {
             cookieStore.set({ name, value: '', ...options })
           } catch {
-            // Server Component tidak bisa remove cookies
+            // Server Component can't remove cookies
           }
         },
       },
