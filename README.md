@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KMS SPBE - Sistem Manajemen Pengetahuan SPBE
+
+Platform manajemen pengetahuan untuk mendukung implementasi SPBE di instansi pemerintah.
+
+## Tech Stack
+
+- **Framework:** Next.js 14+ (App Router)
+- **Styling:** Tailwind CSS
+- **Database:** Supabase
+- **Deployment:** Vercel
+- **Language:** TypeScript
+
+## Features
+
+- 📚 Document Management
+- 🔍 Smart Search
+- 🔐 Role-based Access Control
+- 📝 Version Control
+- 👥 Team Collaboration
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
+- Node.js 18+
+- pnpm
+
+### Installation
+
+\```bash
+# Clone repository
+git clone https://github.com/niumination/kms-spbe.git
+cd kms-spbe
+
+# Install dependencies
+pnpm install
+
+# Setup environment variables
+cp .env.example .env.local
+# Edit .env.local with your Supabase credentials
+
+# Run development server
 pnpm dev
-# or
-bun dev
-```
+\```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create `.env.local` file:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+\```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_key
+\```
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+Deploy to Vercel:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+\```bash
+vercel --prod
+\```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
+MIT
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Author
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- GitHub: [@niumination](https://github.com/niumination)
