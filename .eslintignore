@@ -1,0 +1,12 @@
+# .eslintignore
+node_modules
+.next
+out
+public
+*.config.js
+*.config.ts
+coverage
+dist
+build
+.turbo
+.vercel

@@ -1,0 +1,15 @@
+{
+  "buildCommand": "pnpm run build",
+  "devCommand": "pnpm run dev",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "regions": ["sin1"],
+  "functions": {
+    "app/api/content/[slug]/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/search/route.ts": {
+      "maxDuration": 10
+    }
+  }
+}
