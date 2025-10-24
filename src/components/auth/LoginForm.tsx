@@ -11,10 +11,24 @@ export function LoginForm() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const supabase = createClient()
+  
+  // Handle missing environment variables gracefully
+  let supabase: ReturnType<typeof createClient> | null = null
+  
+  try {
+    supabase = createClient()
+  } catch (error) {
+    console.error('Supabase client initialization failed:', error)
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!supabase) {
+      toast.error('Authentication service is not configured')
+      return
+    }
+    
     setLoading(true)
 
     try {
@@ -36,6 +50,11 @@ export function LoginForm() {
   }
 
   const handleGoogleLogin = async () => {
+    if (!supabase) {
+      toast.error('Authentication service is not configured')
+      return
+    }
+    
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -48,6 +67,19 @@ export function LoginForm() {
     } catch (error: any) {
       toast.error(error.message || 'Login dengan Google gagal')
     }
+  }
+
+  // Jika Supabase tidak configured, tampilkan pesan
+  if (!supabase) {
+    return (
+      <div className="w-full max-w-md space-y-8">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <p className="text-yellow-800 text-sm">
+            Authentication service is currently unavailable. Please contact administrator.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (

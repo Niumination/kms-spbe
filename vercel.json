@@ -3,12 +3,13 @@
   "devCommand": "pnpm run dev",
   "installCommand": "pnpm install",
   "framework": "nextjs",
+  "outputDirectory": ".next",
   "regions": ["sin1"],
   "functions": {
-    "app/api/content/[slug]/route.ts": {
+    "src/app/api/content/[slug]/route.ts": {
       "maxDuration": 10
     },
-    "app/api/search/route.ts": {
+    "src/app/api/search/route.ts": {
       "maxDuration": 10
     }
   }
