@@ -1,78 +1,57 @@
 // src/components/auth/ProtectedRoute.tsx
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 
 interface ProtectedRouteProps {
-  children: React.ReactNode
-  requiredRole?: 'admin' | 'editor' | 'viewer'
+  children: React.ReactNode;
 }
 
-export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
-  const [loading, setLoading] = useState(true)
-  const [authorized, setAuthorized] = useState(false)
-  const router = useRouter()
-  const supabase = createClient()
+export function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    checkAuth()
-  }, [])
+    const checkAuth = async () => {
+      try {
+        const supabase = createClient();
+        
+        const { data: { user }, error } = await supabase.auth.getUser();
 
-  const checkAuth = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser()
-      
-      if (!user) {
-        router.push('/auth/login')
-        return
-      }
-
-      if (requiredRole) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user.id)
-          .single()
-
-        if (!profile || !checkRole(profile.role, requiredRole)) {
-          router.push('/unauthorized')
-          return
+        if (error || !user) {
+          router.push('/auth/login');
+          return;
         }
+
+        setIsAuthorized(true);
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        router.push('/auth/login');
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      setAuthorized(true)
-    } catch (error) {
-      console.error('Auth check failed:', error)
-      router.push('/auth/login')
-    } finally {
-      setLoading(false)
-    }
-  }
+    checkAuth();
+  }, [router]);
 
-  const checkRole = (userRole: string, required: string): boolean => {
-    const roleHierarchy = {
-      admin: 3,
-      editor: 2,
-      viewer: 1
-    }
-    
-    return roleHierarchy[userRole as keyof typeof roleHierarchy] >= 
-           roleHierarchy[required as keyof typeof roleHierarchy]
-  }
-
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Memuat...</p>
+        </div>
       </div>
-    )
+    );
   }
 
-  if (!authorized) {
-    return null
+  if (!isAuthorized) {
+    return null;
   }
 
-  return <>{children}</>
+  return <>{children}</>;
 }

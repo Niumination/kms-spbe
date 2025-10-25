@@ -1,65 +1,84 @@
 // src/lib/search/searchEngine.ts
-import lunr from 'lunr'
-import { getAllContent, Content } from '@/lib/markdown/parser'
+import lunr from 'lunr';
+import { getAllContent } from '@/lib/markdown/parser';
+import type { Content, ContentWithScore } from '@/types/database';
 
-let searchIndex: lunr.Index | null = null
-let documents: Map<string, Content> = new Map()
+let searchIndex: lunr.Index | null = null;
+let indexedContents: Content[] = [];
 
-export function buildSearchIndex() {
-  const contents = getAllContent()
-  
-  documents.clear()
-  contents.forEach(content => {
-    documents.set(content.metadata.slug, content)
-  })
+// Build search index
+export async function buildSearchIndex(): Promise<void> {
+  try {
+    const contents = await getAllContent();
+    
+    // Store contents for later retrieval
+    indexedContents = contents;
 
-  searchIndex = lunr(function() {
-    this.ref('slug')
-    this.field('title', { boost: 10 })
-    this.field('description', { boost: 5 })
-    this.field('content')
-    this.field('tags', { boost: 3 })
+    // Build lunr index
+    searchIndex = lunr(function () {
+      this.ref('slug');
+      this.field('title', { boost: 10 });
+      this.field('description', { boost: 5 });
+      this.field('body');
+      this.field('tags');
 
-    contents.forEach(content => {
-      this.add({
-        slug: content.metadata.slug,
-        title: content.metadata.title,
-        description: content.metadata.description || '',
-        content: content.content,
-        tags: content.metadata.tags.join(' ')
-      })
-    })
-  })
+      contents.forEach((content) => {
+        this.add({
+          slug: content.slug,
+          title: content.title,
+          description: content.description || '',
+          body: content.body,
+          tags: content.metadata?.tags?.join(' ') || '',
+        });
+      });
+    });
+
+    console.log(`Search index built with ${contents.length} documents`);
+  } catch (error) {
+    console.error('Failed to build search index:', error);
+    throw error;
+  }
 }
 
-export function searchDocuments(query: string, userAccessLevel?: string) {
+// Search content - ✅ Return ContentWithScore[]
+export async function searchContent(query: string): Promise<ContentWithScore[]> {
+  // Build index if not already built
   if (!searchIndex) {
-    buildSearchIndex()
+    await buildSearchIndex();
   }
 
-  const results = searchIndex!.search(query)
-  
-  return results
-    .map(result => {
-      const doc = documents.get(result.ref)
-      if (!doc) return null
-      
-      // Filter by access level
-      if (userAccessLevel) {
-        if (doc.metadata.access_level === 'restricted' && userAccessLevel !== 'admin') {
-          return null
+  if (!searchIndex) {
+    throw new Error('Search index not available');
+  }
+
+  try {
+    // Perform search
+    const results = searchIndex.search(query);
+
+    // Map results to content objects with scores
+    const searchResults = results
+      .map((result) => {
+        const content = indexedContents.find((c) => c.slug === result.ref);
+        if (content) {
+          return {
+            ...content,
+            score: result.score,
+          } as ContentWithScore;
         }
-        if (doc.metadata.access_level === 'internal' && userAccessLevel === 'public') {
-          return null
-        }
-      } else if (doc.metadata.access_level !== 'public') {
-        return null
-      }
-      
-      return {
-        ...doc,
-        score: result.score
-      }
-    })
-    .filter(Boolean)
+        return null;
+      })
+      .filter((item): item is ContentWithScore => item !== null)
+      .slice(0, 10); // Limit to top 10 results
+
+    return searchResults;
+  } catch (error) {
+    console.error('Search failed:', error);
+    return [];
+  }
+}
+
+// Clear index (useful for rebuilding)
+export function clearSearchIndex(): void {
+  searchIndex = null;
+  indexedContents = [];
 }

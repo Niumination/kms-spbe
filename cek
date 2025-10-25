@@ -1,0 +1,16 @@
+# 1. Check HTML structure
+curl -s http://localhost:3000 | \
+  grep -E '<title>|<meta|<h1>|<img' | \
+  head -n 20
+
+# 2. Check response headers
+curl -I http://localhost:3000
+
+# 3. Check API endpoints
+curl http://localhost:3000/api/search
+
+# 4. Check bundle size
+du -sh .next
+
+# 5. Check build output
+pnpm build 2>&1 | tee build.log
