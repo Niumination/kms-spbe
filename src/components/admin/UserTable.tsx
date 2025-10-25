@@ -40,26 +40,26 @@ export function UserTable({
   totalPages,
   totalCount,
 }: UserTableProps) {
-  const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
 
   const handleRoleChange = async (userId: string, newRole: string) => {
-  try {
-    const { error } = await (supabase as any)
-      .from('profiles')
-      .update({ role: newRole })
-      .eq('id', userId);
+    try {
+      const supabaseAny = supabase as any;
+      const { error } = await supabaseAny
+        .from('profiles')
+        .update({ role: newRole })
+        .eq('id', userId);
 
-    if (error) throw error;
-    toast.success('Role berhasil diubah');
-    router.refresh();
-  } catch (error: any) {
-    console.error('Error updating role:', error);
-    toast.error('Gagal mengubah role');
-  }
-};
+      if (error) throw error;
+      toast.success('Role berhasil diubah');
+      router.refresh();
+    } catch (error) {
+      console.error('Error updating role:', error);
+      toast.error('Gagal mengubah role');
+    }
+  };
 
   const roleConfig = {
     admin: {
@@ -126,7 +126,7 @@ export function UserTable({
                 <tr key={user.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-medium">
+                      <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-medium">
                         {user.full_name?.[0]?.toUpperCase() || user.email[0].toUpperCase()}
                       </div>
                       <div>
@@ -173,8 +173,7 @@ export function UserTable({
                           onClick={() =>
                             setOpenMenuId(openMenuId === user.id ? null : user.id)
                           }
-                          disabled={updatingId === user.id}
-                          className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
+                          className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors"
                           title="Change role"
                         >
                           <MoreVerticalIcon className="w-4 h-4" />

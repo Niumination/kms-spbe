@@ -2,6 +2,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 
 interface Profile {
   id: string;
@@ -31,18 +32,22 @@ export default async function DashboardLayout({
     .single();
 
   const userRole = profile ? (profile as Profile).role : 'user';
+  const userName = profile ? (profile as Profile).full_name : undefined;
 
   return (
     <div className="min-h-screen bg-gray-50">
-      
       <div className="flex">
         <DashboardSidebar role={userRole} />
         
-        <main className="flex-1 p-6 lg:p-8 ml-0 lg:ml-64">
-          <div className="max-w-7xl mx-auto">
-            {children}
-          </div>
-        </main>
+        <div className="flex-1 lg:ml-64">
+          <DashboardHeader userEmail={user.email || ''} userName={userName} />
+          
+          <main className="p-6 lg:p-8">
+            <div className="max-w-7xl mx-auto">
+              {children}
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   );

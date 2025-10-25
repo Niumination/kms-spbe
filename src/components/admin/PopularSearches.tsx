@@ -28,10 +28,10 @@ export function PopularSearches({ searches }: PopularSearchesProps) {
             <div key={index} className="space-y-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+                  <span className="shrink-0 w-6 h-6 rounded-full bg-linear-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
                     {index + 1}
                   </span>
-                  <SearchIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <SearchIcon className="w-4 h-4 text-gray-400 shrink-0" />
                   <span className="text-sm text-gray-900 truncate">
                     {search.query}
                   </span>
@@ -42,7 +42,7 @@ export function PopularSearches({ searches }: PopularSearchesProps) {
               </div>
               <div className="ml-8 h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+                  className="h-full bg-linear-to-r from-purple-500 to-pink-500 rounded-full"
                   style={{
                     width: `${((search.count || 0) / maxCount) * 100}%`,
                   }}
