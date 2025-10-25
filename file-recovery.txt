@@ -1,0 +1,5 @@
+# Restore files from specific date
+aws s3 sync \
+  s3://kms-spbe-backups/storage/20240120/ \
+  s3://kms-spbe-storage/ \
+  --delete

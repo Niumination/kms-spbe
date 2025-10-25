@@ -1,15 +1,16 @@
-// src/app/auth/login/page.tsx
-import { LoginForm } from "@/components/auth/LoginForm";
+// src/app/auth/register/page.tsx
+import { RegisterForm } from "@/components/auth/RegisterForm";
 import Link from "next/link";
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 
 export const metadata = {
-  title: 'Login | KMS SPBE',
-  description: 'Login ke sistem KMS SPBE',
+  title: 'Register | KMS SPBE',
+  description: 'Daftar akun KMS SPBE',
 };
 
-export default async function LoginPage() {
+export default async function RegisterPage() {
+  // Check if already logged in
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -27,19 +28,19 @@ export default async function LoginPage() {
             <Link href="/" className="inline-block">
               <h1 className="text-3xl font-bold text-blue-600">KMS SPBE</h1>
             </Link>
-            <p className="text-gray-700 mt-2 font-medium">
-              Sistem Manajemen Pengetahuan Pemerintah
+            <p className="text-gray-600 mt-2">
+              Daftar Akun Baru
             </p>
           </div>
 
-          {/* Login Form */}
-          <LoginForm />
+          {/* Register Form */}
+          <RegisterForm />
 
           {/* Back to Home */}
           <div className="mt-6 text-center">
             <Link
               href="/"
-              className="text-sm text-gray-700 hover:text-gray-900 font-medium"
+              className="text-sm text-gray-600 hover:text-gray-900"
             >
               ← Kembali ke Beranda
             </Link>

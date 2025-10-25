@@ -1,0 +1,34 @@
+{
+  "categories": [
+    {
+      "id": "guides",
+      "name": "Panduan",
+      "description": "Panduan penggunaan dan implementasi",
+      "icon": "book-open",
+      "color": "blue"
+    },
+    {
+      "id": "policies",
+      "name": "Kebijakan",
+      "description": "Kebijakan dan regulasi terkait SPBE",
+      "icon": "file-text",
+      "color": "green"
+    },
+    {
+      "id": "sops",
+      "name": "SOP",
+      "description": "Standard Operating Procedures",
+      "icon": "clipboard-check",
+      "color": "purple"
+    },
+    {
+      "id": "templates",
+      "name": "Template",
+      "description": "Template dokumen dan formulir",
+      "icon": "file-code",
+      "color": "orange"
+    }
+  ],
+  "version": "1.0.0",
+  "last_updated": "2024-01-20"
+}

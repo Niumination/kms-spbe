@@ -1,0 +1,14 @@
+# 1. Create new Supabase project
+supabase projects create kms-spbe-recovery
+
+# 2. Get latest full backup
+aws s3 cp s3://kms-spbe-backups/database/latest/db_full.sql.gz .
+
+# 3. Restore
+gunzip db_full.sql.gz
+supabase db push --project-ref new-project-ref
+
+# 4. Verify data integrity
+npm run verify-data
+
+# 5. Update DNS/connections to new instance
