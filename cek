@@ -14,3 +14,6 @@ du -sh .next
 
 # 5. Check build output
 pnpm build 2>&1 | tee build.log
+
+
+

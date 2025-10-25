@@ -46,25 +46,20 @@ export function UserTable({
   const supabase = createClient();
 
   const handleRoleChange = async (userId: string, newRole: string) => {
-    setUpdatingId(userId);
+  try {
+    const { error } = await (supabase as any)
+      .from('profiles')
+      .update({ role: newRole })
+      .eq('id', userId);
 
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ role: newRole })
-        .eq('id', userId);
-
-      if (error) throw error;
-
-      toast.success(`Role berhasil diubah menjadi ${newRole}`);
-      router.refresh();
-    } catch (error: any) {
-      toast.error(error.message || 'Gagal mengubah role');
-    } finally {
-      setUpdatingId(null);
-      setOpenMenuId(null);
-    }
-  };
+    if (error) throw error;
+    toast.success('Role berhasil diubah');
+    router.refresh();
+  } catch (error: any) {
+    console.error('Error updating role:', error);
+    toast.error('Gagal mengubah role');
+  }
+};
 
   const roleConfig = {
     admin: {

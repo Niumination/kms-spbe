@@ -11,6 +11,30 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+interface Content {
+  id: string;
+  title: string;
+  content: string;
+  category_id: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  author_id: string;
+  [key: string]: any;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  [key: string]: any;
+}
+
+interface Tag {
+  id: string;
+  name: string;
+  [key: string]: any;
+}
+
 export default async function EditContentPage({ params }: PageProps) {
   const { id } = await params;
   const supabase = await createClient();
@@ -43,16 +67,16 @@ export default async function EditContentPage({ params }: PageProps) {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Edit Konten</h1>
         <p className="text-gray-600 mt-1">
-          Update konten: {content.title}
+          Update konten: {(content as Content).title}
         </p>
       </div>
 
       {/* Editor */}
       <ContentEditor
         mode="edit"
-        content={content}
-        categories={categories || []}
-        tags={tags || []}
+        content={content as Content}
+        categories={(categories as Category[]) || []}
+        tags={(tags as Tag[]) || []}
       />
     </div>
   );

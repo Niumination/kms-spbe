@@ -55,42 +55,42 @@ export function ContentTable({
   const supabase = createClient();
 
   const handleDelete = async (id: string, title: string) => {
-    if (!confirm(`Hapus konten "${title}"?`)) return;
+  if (!confirm(`Yakin ingin menghapus konten "${title}"?`)) return;
+  
+  setDeletingId(id);
+  
+  try {
+    const { error } = await (supabase as any)
+      .from('contents')
+      .delete()
+      .eq('id', id);
 
-    setDeletingId(id);
-
-    try {
-      const { error } = await supabase.from('contents').delete().eq('id', id);
-
-      if (error) throw error;
-
-      toast.success('Konten berhasil dihapus');
-      router.refresh();
-    } catch (error: any) {
-      toast.error(error.message || 'Gagal menghapus konten');
-    } finally {
-      setDeletingId(null);
-      setOpenMenuId(null);
-    }
-  };
+    if (error) throw error;
+    toast.success('Konten berhasil dihapus');
+    router.refresh();
+  } catch (error: any) {
+    console.error('Error deleting content:', error);
+    toast.error('Gagal menghapus konten');
+  } finally {
+    setDeletingId(null);
+  }
+};
 
   const handleStatusChange = async (id: string, newStatus: string) => {
-    try {
-      const { error } = await supabase
-        .from('contents')
-        .update({ status: newStatus })
-        .eq('id', id);
+  try {
+    const { error } = await (supabase as any)
+      .from('contents')
+      .update({ status: newStatus })
+      .eq('id', id);
 
-      if (error) throw error;
-
-      toast.success(`Status diubah menjadi ${newStatus}`);
-      router.refresh();
-    } catch (error: any) {
-      toast.error(error.message || 'Gagal mengubah status');
-    } finally {
-      setOpenMenuId(null);
-    }
-  };
+    if (error) throw error;
+    toast.success('Status berhasil diubah');
+    router.refresh();
+  } catch (error: any) {
+    console.error('Error updating status:', error);
+    toast.error('Gagal mengubah status');
+  }
+};
 
   const statusColors = {
     published: 'bg-green-100 text-green-800',

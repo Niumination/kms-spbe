@@ -5,6 +5,11 @@ import { TopContents } from '@/components/admin/TopContents';
 import { UserGrowthChart } from '@/components/admin/UserGrowthChart';
 import { SearchTrends } from '@/components/admin/SearchTrends';
 
+interface SearchRecord {
+  query: string;
+  [key: string]: any;
+};
+
 export const metadata = {
   title: 'Analytics | Admin KMS SPBE',
 };
@@ -37,7 +42,7 @@ export default async function AnalyticsPage() {
   ]);
 
   // Process search trends
-  const searchTrends = recentSearches?.reduce((acc, search) => {
+  const searchTrends = (recentSearches as SearchRecord[] | undefined)?.reduce((acc, search) => {
     acc[search.query] = (acc[search.query] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);

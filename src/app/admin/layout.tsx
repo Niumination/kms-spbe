@@ -1,8 +1,20 @@
 // src/app/admin/layout.tsx
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { AdminNav } from '@/components/admin/AdminNav';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { AdminHeader } from '@/components/admin/AdminHeader';
+
+export const metadata = {
+  title: 'Admin Panel | KMS SPBE',
+};
+
+interface Profile {
+  id: string;
+  role: string;
+  full_name?: string;
+  email?: string;
+  [key: string]: any;
+}
 
 export default async function AdminLayout({
   children,
@@ -10,13 +22,12 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const supabase = await createClient();
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  if (error || !user) {
+  if (!user) {
     redirect('/auth/login');
   }
 
-  // Get user profile and check role
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')
@@ -24,21 +35,17 @@ export default async function AdminLayout({
     .single();
 
   // Only admin and editor can access admin panel
-  if (!profile || !['admin', 'editor'].includes(profile.role)) {
+  if (!profile || !['admin', 'editor'].includes((profile as Profile).role)) {
     redirect('/unauthorized');
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <AdminNav user={user} profile={profile} />
-      
-      <div className="flex">
-        <AdminSidebar role={profile.role} />
-        
-        <main className="flex-1 p-6 lg:p-8 ml-0 lg:ml-64">
-          <div className="max-w-7xl mx-auto">
-            {children}
-          </div>
+    <div className="flex h-screen bg-gray-100">
+      <AdminSidebar profile={profile as Profile} />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <AdminHeader user={user} profile={profile as Profile} />
+        <main className="flex-1 overflow-y-auto p-6">
+          {children}
         </main>
       </div>
     </div>
