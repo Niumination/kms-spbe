@@ -37,3 +37,8 @@ next-env.d.ts
 
 # cache
 .turbo
+
+# berkas env nyasar (jangan pernah di-track)
+.env production
+.env.local.backup
+.env
